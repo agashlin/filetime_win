@@ -1,6 +1,6 @@
 [package]
 name = "filetime_win"
-version = "0.1.0-alpha1"
+version = "0.1.0-alpha2"
 authors = ["Adam Gashlin <agashlin@mozilla.com>"]
 description = "Windows FILETIME and SYSTEMTIME string and binary serialization"
 keywords = ["windows", "com", "win32"]
@@ -15,7 +15,7 @@ default-target = "x86_64-pc-windows-msvc"
 filetime_serde = ["serde", "serde_derive"]
 
 [dependencies]
-comedy = "0.1.0-alpha"
+comedy = "0.1.0-alpha2"
 winapi = { version = "0.3.6", features = ["minwinbase",
                                           "minwindef",
                                           "ntdef",

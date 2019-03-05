@@ -124,7 +124,7 @@ impl FileTime {
     }
 
     /// Convert to `SystemTimeUTC` via `FileTimeToSystemTime()`
-    pub fn to_system_time_utc(self) -> result::Result<SystemTimeUTC, comedy::Error> {
+    pub fn to_system_time_utc(self) -> result::Result<SystemTimeUTC, comedy::Win32Error> {
         unsafe {
             let mut system_time = mem::zeroed();
 
@@ -180,7 +180,7 @@ impl SystemTimeUTC {
     }
 
     /// Convert to `FileTime` via `SystemTimeToFileTime()`
-    pub fn to_file_time(&self) -> result::Result<FileTime, comedy::Error> {
+    pub fn to_file_time(&self) -> result::Result<FileTime, comedy::Win32Error> {
         unsafe {
             let mut file_time = mem::zeroed();
 
@@ -231,7 +231,8 @@ impl Display for SystemTimeUTC {
 
 #[cfg(test)]
 mod tests {
-    use super::SystemTimeUTC;
+    use super::{FileTime, SystemTimeUTC};
+    use winapi::shared::minwindef::FILETIME;
     use winapi::um::minwinbase::SYSTEMTIME;
 
     #[test]
@@ -253,5 +254,15 @@ mod tests {
         let ft_now = st_now.to_file_time().unwrap();
         let ft_next_year = st_next_year.to_file_time().unwrap();
         assert!(ft_next_year > ft_now);
+    }
+
+    #[test]
+    fn non_time_filetime() {
+        let ft = FileTime(FILETIME {
+            dwLowDateTime: 0xFFFF_FFFFu32,
+            dwHighDateTime: 0xFFFF_FFFFu32,
+        });
+
+        ft.to_system_time_utc().expect_err("should have failed");
     }
 }
